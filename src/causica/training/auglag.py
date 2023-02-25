@@ -216,11 +216,10 @@ class AugLagLR:
         if self._is_inner_converged():
             if self._is_outer_converged():
                 return True
-            else:
-                self._update_lagrangian_params(loss)
-                self.outer_opt_counter += 1
-                self._init_new_inner_optimisation()
-                self._reset_lr(optimizer)
+            self._update_lagrangian_params(loss)
+            self.outer_opt_counter += 1
+            self._init_new_inner_optimisation()
+            self._reset_lr(optimizer)
         elif self._enough_steps_since_last_lr_update() and self._enough_steps_since_best_model():
             self._update_lr(optimizer)
 

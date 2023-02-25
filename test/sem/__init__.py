@@ -15,7 +15,10 @@ def create_lingauss_sem(
     def get_noise_accessible_constructor(shape: torch.Size) -> Callable[[torch.Tensor], NoiseAccessibleDistribution]:
         def constructor(x: torch.Tensor) -> NoiseAccessibleDistribution:
             return NoiseAccessibleMultivariateNormal(
-                x, covariance_matrix=torch.diag_embed(scale * scale * torch.ones(shape))
+                x,
+                covariance_matrix=torch.diag_embed(
+                    scale**2 * torch.ones(shape)
+                ),
             )
 
         return constructor

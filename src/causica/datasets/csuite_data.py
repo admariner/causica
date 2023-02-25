@@ -106,7 +106,7 @@ def _load_interventions(json_object: Dict[str, Any], metadata: Dict[str, Any]) -
     intervened_column_to_group_name: Dict[int, str] = dict(
         zip(
             json_object["metadata"]["columns_to_nodes"],
-            list(item["group_name"] for item in variables_list),
+            [item["group_name"] for item in variables_list],
         )
     )
 
@@ -137,7 +137,10 @@ def _load_interventions(json_object: Dict[str, Any], metadata: Dict[str, Any]) -
         )
 
         # store the nodes we're interested in observing
-        effect_nodes = set(intervened_column_to_group_name[idx] for idx in environment["effect_idxs"])
+        effect_nodes = {
+            intervened_column_to_group_name[idx]
+            for idx in environment["effect_idxs"]
+        }
         # default to all nodes
         if not effect_nodes:
             effect_nodes = set(intervention.sampled_nodes)
@@ -161,7 +164,7 @@ def _load_counterfactuals(json_object: Dict[str, Any], metadata: Dict[str, Any])
     intervened_column_to_group_name: Dict[int, str] = dict(
         zip(
             json_object["metadata"]["columns_to_nodes"],
-            list(item["group_name"] for item in variables_list),
+            [item["group_name"] for item in variables_list],
         )
     )
 
@@ -183,7 +186,10 @@ def _load_counterfactuals(json_object: Dict[str, Any], metadata: Dict[str, Any])
         )
 
         # store the nodes we're interested in observing
-        effect_nodes = set(intervened_column_to_group_name[idx] for idx in environment["effect_idxs"])
+        effect_nodes = {
+            intervened_column_to_group_name[idx]
+            for idx in environment["effect_idxs"]
+        }
         # default to all nodes
         if not effect_nodes:
             effect_nodes = set(intervention.sampled_nodes)
@@ -238,11 +244,11 @@ def get_categorical_sizes(variables_list: List[Dict[str, Any]]) -> Dict[str, int
         if item["type"] == "categorical":
             upper = item.get("upper")
             lower = item.get("lower")
-            if upper is not None and lower is not None:
-                categorical_sizes[item["group_name"]] = item["upper"] - item["lower"] + 1
-            else:
+            if upper is None or lower is None:
                 assert upper is None and lower is None, "Please specify either both limits or neither"
                 categorical_sizes[item["group_name"]] = -1
+            else:
+                categorical_sizes[item["group_name"]] = item["upper"] - item["lower"] + 1
     return categorical_sizes
 
 

@@ -40,7 +40,11 @@ def test_dataset_with_groups():
     """Test a dataset with "grouped" variables i.e. multidimensional datapoints per node"""
     dims = [5, 3, 1]
     data = np.random.rand(500, sum(dims)).astype(np.float32)
-    col_name_list = list((f"x_{i}", f"x_{i}_{j}") for i, val in enumerate(dims) for j in range(val))
+    col_name_list = [
+        (f"x_{i}", f"x_{i}_{j}")
+        for i, val in enumerate(dims)
+        for j in range(val)
+    ]
 
     columns = pd.MultiIndex.from_tuples(col_name_list)
     dataframe = pd.DataFrame(data, columns=columns)

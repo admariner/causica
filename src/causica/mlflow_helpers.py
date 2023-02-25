@@ -23,7 +23,9 @@ class MLFlowBatch:
 
     def log_metric(self, key: str, value: float, step: int = 0):
         """Stores a metric in the log batch and pushes if the batch is full."""
-        metric = mlflow.entities.Metric(key=key, value=float(value), timestamp=int(time.time()), step=step)
+        metric = mlflow.entities.Metric(
+            key=key, value=value, timestamp=int(time.time()), step=step
+        )
         self._queue.put(metric)
         if self._queue.full():
             self.flush()
